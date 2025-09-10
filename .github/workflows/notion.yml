@@ -23,19 +23,12 @@ jobs:
 
             if (!commits.length) {
               core.setOutput("messages", "No commits found");
-              core.setOutput("emoji", "📦");
               return;
             }
 
             // List of commits
             const messages = commits.map(c => `- ${c.commit.message}`).join("\n");
-            
-            // Emoji del primer commit
-            let firstCommitMsg = commits[0].commit.message.trim();
-            let emoji = firstCommitMsg.charAt(0);
-
             core.setOutput("messages", messages);
-            core.setOutput("emoji", emoji);
 
       - name: Save on Notion
         run: |
@@ -45,12 +38,12 @@ jobs:
             -H "Notion-Version: 2022-06-28" \
             -d '{
               "parent": { "database_id": "26aa14b2-48a0-802e-ae81-ea4a45fa820a" },
-              "icon": { "emoji": "${{ steps.commits.outputs.emoji }}" },
               "properties": {
                 "PR Number": { "number": '${{ github.event.pull_request.number }}' },
                 "Title": { "title": [{ "text": { "content": "${{ github.event.pull_request.title }}" }}] },
                 "Merged By": { "rich_text": [{ "text": { "content": "${{ github.event.pull_request.merged_by.login }}" }}] },
                 "Merged at": { "date": { "start": "${{ github.event.pull_request.merged_at }}" } },
-                "Comments": { "rich_text": [{ "text": { "content": ${{ toJSON(steps.commits.outputs.messages) }} }}] }
+                "Comments": { "rich_text": [{ "text": { "content": ${{ toJSON(steps.commits.outputs.messages) }} }}] },
+                "PR URL": { "url": "${{ github.event.pull_request.html_url }}" }
               }
             }'
