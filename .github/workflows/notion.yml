@@ -34,7 +34,11 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
             });
-            const summary = comments.find(c => c.body.includes("Summary by CodeRabbit"));
+
+            const summary = comments.find(c =>
+              c.body && c.body.trim().startsWith("Summary by CodeRabbit")
+            );
+
             return summary ? summary.body : "No se encontró resumen";
 
       - name: Guardar en Notion
