@@ -32,6 +32,7 @@ jobs:
             --arg pr_number "${{ github.event.pull_request.number }}" \
             --arg title "${{ github.event.pull_request.title }}" \
             --arg merged_by "${{ github.event.pull_request.merged_by.login }}" \
+            --arg merged_at "${{ github.event.pull_request.merged_at }}" \
             --arg commits "${{ steps.commits.outputs.result }}" \
             '{
               parent: { database_id: $db },
@@ -39,6 +40,7 @@ jobs:
                 "PR Number": { number: ($pr_number | tonumber) },
                 "Title": { title: [{ text: { content: $title } }] },
                 "Merged By": { rich_text: [{ text: { content: $merged_by } }] },
+                "Merged At": { date: { start: $merged_at } },
                 "Comments": { rich_text: [{ text: { content: $commits } }] }
               }
             }' \
