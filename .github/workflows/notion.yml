@@ -19,8 +19,24 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
             });
-            return commits.map(c => `- ${c.commit.message}`).join("\n");
+            return commits.map(c => `- ${c.commit.message}`).join("\n")
 
-      - name: Ver PR body
-        run: echo "${{ github.event.pull_request.body }}"
+      - name: Depurar comentarios de revisión
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: reviewComments } = await github.rest.pulls.listReviewComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
 
+            console.log("Total de comentarios de revisión:", reviewComments.length);
+
+            for (const rc of reviewComments) {
+              console.log("-----");
+              console.log("ID:", rc.id);
+              console.log("Usuario:", rc.user.login);
+              console.log("Body completo:");
+              console.log(rc.body);
+            }
