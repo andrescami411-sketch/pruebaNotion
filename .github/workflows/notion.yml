@@ -23,6 +23,24 @@ jobs:
             });
             return commits.map(c => `- ${c.commit.message}`).join("\n");
 
+      - name: Debug comments
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            console.log("Total comentarios:", comments.length);
+
+            for (const c of comments) {
+              console.log("-----");
+              console.log("Usuario:", c.user.login);
+              console.log("Body (primeros 200 chars):", c.body.substring(0, 200));
+            }
+
       - name: Obtener summary de CodeRabbit
         id: summary
         uses: actions/github-script@v7
@@ -35,11 +53,20 @@ jobs:
               issue_number: context.payload.pull_request.number,
             });
 
-            const summary = comments.find(c =>
-              c.body && c.body.trim().startsWith("Summary by CodeRabbit")
+            const summaryComment = comments.find(c =>
+              c.body && c.body.includes("## Summary by CodeRabbit")
             );
 
-            return summary ? summary.body : "No se encontró resumen";
+            if (!summaryComment) {
+              console.log("No se encontró resumen");
+              return "No se encontró resumen";
+            }
+
+            // Limpiar comentarios ocultos <!-- ... -->
+            const cleaned = summaryComment.body.replace(/<!--[\s\S]*?-->/g, "").trim();
+            console.log("Resumen encontrado:", cleaned.substring(0, 200));
+
+            return cleaned;
 
       - name: Guardar en Notion
         run: |
