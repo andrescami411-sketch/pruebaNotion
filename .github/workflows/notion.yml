@@ -29,15 +29,10 @@ jobs:
 
             // List of commits
             const messages = commits.map(c => `- ${c.commit.message}`).join("\n");
-
+            
             // Emoji del primer commit
             let firstCommitMsg = commits[0].commit.message.trim();
             let emoji = firstCommitMsg.charAt(0);
-
-            // If it's not a valid emoji (normal character), use 📦 as fallback
-            if (!/\p{Emoji}/u.test(emoji)) {
-              emoji = "📦";
-            }
 
             core.setOutput("messages", messages);
             core.setOutput("emoji", emoji);
