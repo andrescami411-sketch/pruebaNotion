@@ -17,6 +17,14 @@
                 <button>Eliminar</button>
             </td>
         </tr>
+        <tr>
+            <td>Jane Doe 2</td>
+            <td>jane2.doe@example.com</td>
+            <td>
+                <button>Editar</button>
+                <button>Eliminar</button>
+            </td>
+        </tr>
      </tbody>
      </table>
 </div>
