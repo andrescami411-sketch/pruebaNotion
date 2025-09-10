@@ -21,8 +21,6 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
             });
-
-            // Devuelve lista multilínea de commits
             return commits.map(c => `- ${c.commit.message} (${c.sha.substring(0,7)})`).join("\n");
 
       - name: Guardar en Notion
@@ -40,7 +38,7 @@ jobs:
                 "PR Number": { number: ($pr_number | tonumber) },
                 "Title": { title: [{ text: { content: $title } }] },
                 "Merged By": { rich_text: [{ text: { content: $merged_by } }] },
-                "Merged At": { date: { start: $merged_at } },
+                "Merged at": { date: { start: $merged_at } },
                 "Comments": { rich_text: [{ text: { content: $commits } }] }
               }
             }' \
