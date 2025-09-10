@@ -8,6 +8,7 @@ jobs:
   send-pr-data:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+
     steps:
       - name: Obtener comentarios del PR
         id: comments
@@ -20,10 +21,7 @@ jobs:
               issue_number: context.payload.pull_request.number,
             });
             return {
-              comments: comments.map(c => ({
-                user: c.user.login,
-                body: c.body
-              }))
+              comments: comments.map(c => `${c.user.login}: ${c.body}`).join(" | ")
             }
 
       - name: Guardar en Notion
@@ -33,11 +31,11 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Notion-Version: 2022-06-28" \
             -d '{
-              "parent": { "database_id": "261a14b248a080a1877ed22560259d54" },
+              "parent": { "database_id": "26aa14b248a0802eae81ea4a45fa820a" },
               "properties": {
-                "PR Number": { "number": '${{ github.event.pull_request.number }}' },
+                "PR Number": { "number": ${{ github.event.pull_request.number }} },
                 "Title": { "title": [{ "text": { "content": "${{ github.event.pull_request.title }}" }}] },
                 "Merged By": { "rich_text": [{ "text": { "content": "${{ github.event.pull_request.merged_by.login }}" }}] },
-                "Comments": { "rich_text": [{ "text": { "content": ${{ toJSON(steps.comments.outputs.result) }} }}] }
+                "Comments": { "rich_text": [{ "text": { "content": "${{ steps.comments.outputs.result }}" }}] }
               }
             }'
