@@ -1,0 +1,12 @@
+version: 1
+
+rules:
+  # --- Evitar textos en español duro sin __() o @lang() ---
+  - id: no-hardcoded-spanish
+    pattern: >
+      ["']([^"']*[ÁÉÍÓÚÑáéíóúñü¡¿][^"']*)["']
+    message: >
+      ❌ Se encontró texto en español duro. Usa la función de traducción __() o @lang() en lugar de texto directo.
+    severity: error
+    condition:
+      notMatch: (__\(|@lang\()
