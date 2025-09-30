@@ -18,16 +18,18 @@ rules:
     message: >
       ❌ La función no tiene tipo de retorno. Agrega tipado explícito (ej: `: string`, `: int`, `: void`).
     severity: error
+    condition:
+      notMatch: '(function\s+__(construct|destruct)\s*\()|(\)\s*:\s*[^ \t{]+)'
 
   # --- Parámetros sin tipado ---
   - id: php-parameter-missing-type
     pattern: >
-      function\s+[a-zA-Z0-9_]+\s*\(([^:]+)\)
+      function\s+[A-Za-z0-9_]+\s*\([^)]*(?:^|[,(]\s*)\$[A-Za-z_]\w*
     message: >
       ❌ Se detectaron parámetros sin tipado. Usa tipos explícitos (`int $id`, `string $name`, etc.).
     severity: error
     condition:
-      notMatch: 'function\s+[a-zA-Z0-9_]+\s*\(([^)]*:[^)]*)\)'
+      notMatch: '[,(]\s*\??(?:array|bool|callable|int|float|string|object|mixed|iterable|self|parent|static|\\?[A-Za-z_\\][A-Za-z0-9_\\]*)\s+\$'
 
   # --- Variables sin tipado (propiedades de clase) ---
   - id: php-variable-missing-type
