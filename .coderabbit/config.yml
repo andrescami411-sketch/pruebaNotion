@@ -3,9 +3,9 @@ version: 1
 rules:
   - id: no-hardcoded-spanish
     pattern: >
-      ["']([A-Za-zÁÉÍÓÚÑáéíóúñ¡!¿?\s\.,;:]+)["']
+      ["']([^"']*[ÁÉÍÓÚÑáéíóúñü¡¿][^"']*)["']
     message: >
       ⚠️ Se encontró texto en español duro. Usa la función de traducción __() o @lang() en lugar de texto directo.
     severity: warning
     condition:
-      notMatch: __\(
+      notMatch: (__\(|@lang\()
