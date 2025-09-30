@@ -1,11 +1,38 @@
 version: 1
 
 rules:
+  # --- Evitar textos en español duro sin __() o @lang() ---
   - id: no-hardcoded-spanish
     pattern: >
       ["']([^"']*[ÁÉÍÓÚÑáéíóúñü¡¿][^"']*)["']
     message: >
-      ⚠️ Se encontró texto en español duro. Usa la función de traducción __() o @lang() en lugar de texto directo.
-    severity: warning
+      ❌ Se encontró texto en español duro. Usa la función de traducción __() o @lang() en lugar de texto directo.
+    severity: error
     condition:
       notMatch: (__\(|@lang\()
+
+  # --- Funciones sin declaración de tipo de retorno ---
+  - id: php-function-missing-return-type
+    pattern: >
+      function\s+[a-zA-Z0-9_]+\s*\([^)]*\)\s*{
+    message: >
+      ❌ La función no tiene tipo de retorno. Agrega tipado explícito (ej: `: string`, `: int`, `: void`).
+    severity: error
+
+  # --- Parámetros sin tipado ---
+  - id: php-parameter-missing-type
+    pattern: >
+      function\s+[a-zA-Z0-9_]+\s*\(([^:]+)\)
+    message: >
+      ❌ Se detectaron parámetros sin tipado. Usa tipos explícitos (`int $id`, `string $name`, etc.).
+    severity: error
+    condition:
+      notMatch: 'function\s+[a-zA-Z0-9_]+\s*\(([^)]*:[^)]*)\)'
+
+  # --- Variables sin tipado (propiedades de clase) ---
+  - id: php-variable-missing-type
+    pattern: >
+      (public|protected|private)\s+\$[a-zA-Z0-9_]+
+    message: >
+      ❌ La propiedad no tiene tipado. Usa tipos explícitos (`public string $name;`).
+    severity: error

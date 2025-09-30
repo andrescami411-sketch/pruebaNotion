@@ -8,7 +8,7 @@ use Filament\Schemas\Schema;
 
 class UserForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Schema $schema)
     {
         return $schema
             ->components([
